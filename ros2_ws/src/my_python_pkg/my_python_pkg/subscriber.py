@@ -16,8 +16,28 @@ class MinimalSubscriber(Node):
         self.subscription  # prevent unused variable warning
 
     def listener_callback(self, msg):
+
+        msg_received = msg.data
+        # msg.data = '%d-%f' % (self.i, timestamp)
+        # parse the message
+        msg_received = msg_received.split('-')
+        # get the timestamp
+        timestamp = float(msg_received[1])
+        # get the i
+        i = int(msg_received[0])
+
+        # priority
+        priority = str(msg_received[2])
+
         # here, add the messages to different priority queues
-        self.get_logger().info('I heard: "%s"' % msg.data)
+        # self.get_logger().info('I heard: "%s"' % i)
+
+        # here, print the timestamp assigned
+        # self.get_logger().info('Stamp: "%s"' % timestamp)
+
+        # here, print the difference between the timestamp assigned and the current time
+        self.get_logger().info('Difference: "%s"' % (time.time() - timestamp))
+        self.get_logger().info('Priority: "%s"' % priority)
         # sleep for 1 second
         time.sleep(1)
 
