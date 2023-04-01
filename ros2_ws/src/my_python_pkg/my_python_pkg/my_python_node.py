@@ -3,12 +3,16 @@
 import rclpy
 from rclpy.node import Node
 import time
+import random
 class MyNode(Node):
     def __init__(self):
         super().__init__('my_node_name')
-        self.create_timer(0.2, self.timer_callback)
+        self.create_timer(1, self.timer_callback)
     def timer_callback(self):
-        self.get_logger().info("Hello ROS2") 
+        self.get_logger().info("Hello ROS2 asdasdasasdasd")
+        current_number = random.random()
+        self.get_logger().info(str(current_number))
+
 
 def main(args=None):
     rclpy.init(args=args)
