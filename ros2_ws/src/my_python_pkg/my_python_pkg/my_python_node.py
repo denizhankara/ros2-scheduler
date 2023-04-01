@@ -1,5 +1,9 @@
 # build code
-# colcon build --packages-select my_python_pkg
+# colcon build
+
+# if package not found:
+# source install/setup.bash
+
 import rclpy
 from rclpy.node import Node
 import time
@@ -9,7 +13,7 @@ class MyNode(Node):
         super().__init__('my_node_name')
         self.create_timer(1, self.timer_callback)
     def timer_callback(self):
-        self.get_logger().info("Hello ROS2 asdasdasasdasd")
+        self.get_logger().info("Hello ROS2")
         current_number = random.random()
         self.get_logger().info(str(current_number))
 

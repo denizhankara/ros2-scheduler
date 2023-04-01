@@ -1,3 +1,5 @@
 [console_scripts]
+publisher = my_python_pkg.publisher:main
+subscriber = my_python_pkg.subscriber:main
 test = my_python_pkg.my_python_node:main
 
