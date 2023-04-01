@@ -9,6 +9,7 @@ class MyNode(Node):
         self.create_timer(0.2, self.timer_callback)
     def timer_callback(self):
         self.get_logger().info("Hello ROS2") 
+
 def main(args=None):
     rclpy.init(args=args)
     node = MyNode()
