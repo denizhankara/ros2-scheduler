@@ -5,7 +5,9 @@ from std_msgs.msg import String
 import time
 import random
 import argparse
-
+from collections import defaultdict
+import json
+import os
 class MinimalPublisher(Node):
 
     def __init__(self):
@@ -23,7 +25,21 @@ class MinimalPublisher(Node):
 
         # add data, time and i to the message
         msg.data = '%d-%f-%s' % (message_data, timestamp, priority)
-        # msg.header.stamp = self.get_clock().now().to_msg()
+
+        # log the messages and dictionary
+        current_message = defaultdict(dict)
+        current_message['priority'] = priority
+        current_message['timestamp_sender'] = timestamp
+        current_message['timestamp_receiver'] = time.time()
+        current_message['difference'] = time.time() - timestamp
+        current_message['sender_sequence'] = self.i
+        self.append_record(current_message)
+
+        # publish the message
+        self.publisMessage(msg)
+
+    def publisMessage(self,msg):
+        ## publisher method for any message
         self.publisher_.publish(msg)
         self.get_logger().info('Publishing: "%s"' % msg.data)
         self.i += 1
@@ -45,7 +61,12 @@ class MinimalPublisher(Node):
         # if the number is between 0.2 and 1, return L
         else:
             return 'L'
-
+    
+    def append_record(self,record):
+        with open('publisher_records.json', 'a') as f:
+            json.dump(record, f)
+            f.write(os.linesep)
+    
 def main(args=None):
     rclpy.init(args=args)
 

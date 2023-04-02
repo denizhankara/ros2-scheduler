@@ -5,7 +5,7 @@ from std_msgs.msg import String
 import time
 from collections import defaultdict
 import json
-
+import os
 class MinimalSubscriber(Node):
 
     def __init__(self):
@@ -16,8 +16,8 @@ class MinimalSubscriber(Node):
             self.listener_callback,
             10)
         self.subscription  # prevent unused variable warning
-        self.records = defaultdict(dict)
-        self.received_sequence = 0 # sequence number for receiver, total messages processed
+        self.records = [] # defaultdict(dict)
+        self.receiver_sequence = 0 # sequence number for receiver, total messages processed
 
     def listener_callback(self, msg):
 
@@ -44,22 +44,27 @@ class MinimalSubscriber(Node):
         self.get_logger().info('Priority: "%s"' % priority)
         
         # log the messages and dictionary
-
+        current_message = defaultdict(dict)
         
         # total messages processed
-        self.records['sequence'] = self.received_sequence
-        self.records['sequence']['priority'] = priority
-        self.records['sequence']['timestamp_sender'] = timestamp
-        self.records['sequence']['timestamp_receiver'] = time.time()
-        self.records['sequence']['difference'] = time.time() - timestamp
-        self.records['sequence']['sender_sequence'] = i
-        self.received_sequence += 1
-        # save the dictionary to a file
-        json.dump(self.records, open('subscriber_logs.json', 'wb'))
+        current_message['receiver_sequence'] = self.receiver_sequence
+        current_message['priority'] = priority
+        current_message['timestamp_sender'] = timestamp
+        current_message['timestamp_receiver'] = time.time()
+        current_message['difference'] = time.time() - timestamp
+        current_message['sender_sequence'] = i
+        self.receiver_sequence += 1
+
+        self.append_record(current_message)
         
         # sleep for 1 second
         time.sleep(1)
-
+    
+    def append_record(self,record):
+        with open('subscriber_records.json', 'a') as f:
+            json.dump(record, f)
+            f.write(os.linesep)
+        
 def main(args=None):
     rclpy.init(args=args)
 
@@ -70,6 +75,8 @@ def main(args=None):
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
     # when the garbage collector destroys the node object)
+
+    
     minimal_subscriber.destroy_node()
     rclpy.shutdown()
 
