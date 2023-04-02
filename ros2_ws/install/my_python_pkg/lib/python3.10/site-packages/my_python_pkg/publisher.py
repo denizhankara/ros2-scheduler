@@ -4,6 +4,7 @@ from rclpy.node import Node
 from std_msgs.msg import String
 import time
 import random
+import argparse
 
 class MinimalPublisher(Node):
 
@@ -29,9 +30,9 @@ class MinimalPublisher(Node):
 
     def random_priority(self):
         # generate a random number between 0 and 1
-        # if the number is less than 0.1, return 0
-        # if the number is between 0.1 and 0.2, return 1
-        # if the number is between 0.2 and 1, return 2
+        # if the number is less than 0.1, return H
+        # if the number is between 0.1 and 0.2, return M
+        # if the number is between 0.2 and 1, return L
 
         # generate a random number between 0 and 1
         rand = random.random()

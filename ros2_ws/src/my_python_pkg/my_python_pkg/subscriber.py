@@ -3,6 +3,8 @@ from rclpy.node import Node
 
 from std_msgs.msg import String
 import time
+from collections import defaultdict
+import json
 
 class MinimalSubscriber(Node):
 
@@ -14,6 +16,8 @@ class MinimalSubscriber(Node):
             self.listener_callback,
             10)
         self.subscription  # prevent unused variable warning
+        self.records = defaultdict(dict)
+        self.received_sequence = 0 # sequence number for receiver, total messages processed
 
     def listener_callback(self, msg):
 
@@ -38,6 +42,21 @@ class MinimalSubscriber(Node):
         # here, print the difference between the timestamp assigned and the current time
         self.get_logger().info('Difference: "%s"' % (time.time() - timestamp))
         self.get_logger().info('Priority: "%s"' % priority)
+        
+        # log the messages and dictionary
+
+        
+        # total messages processed
+        self.records['sequence'] = self.received_sequence
+        self.records['sequence']['priority'] = priority
+        self.records['sequence']['timestamp_sender'] = timestamp
+        self.records['sequence']['timestamp_receiver'] = time.time()
+        self.records['sequence']['difference'] = time.time() - timestamp
+        self.records['sequence']['sender_sequence'] = i
+        self.received_sequence += 1
+        # save the dictionary to a file
+        json.dump(self.records, open('subscriber_logs.json', 'wb'))
+        
         # sleep for 1 second
         time.sleep(1)
 
