@@ -48,7 +48,7 @@ def calculate_drop_rate(sender_messages,receiver_messages):
     # calculate the drop rate for each priority
     for priority in priorities:
         # calculate the drop rate
-        drop_rate[priority] = received_messages[priority] / sent_messages[priority]
+        drop_rate[priority] = 1 - (received_messages[priority] / sent_messages[priority])
         # print the drop rate
         print("Drop rate for priority %s: %f" % (priority, drop_rate[priority]))
 

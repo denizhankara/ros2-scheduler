@@ -19,15 +19,21 @@ sampling_rate_expectation = d['sampling_rate_expectation']
 continuity_mode = d['continuity_mode']  # 0: i.i.d, 1: realistic
 continuity_max_length = d['continuity_max_length']
 
+topic_queue_size = int(d['topic_queue_size'])
+publisher_duration = int(d['publisher_duration'])
 
 class MinimalPublisher(Node):
 
     def __init__(self):
         super().__init__('minimal_publisher')
-        self.publisher_ = self.create_publisher(String, 'topic', 10)
+        self.publisher_ = self.create_publisher(String, 'topic', topic_queue_size)
         timer_period = 1.
         self.timer = self.create_timer(timer_period, self.timer_callback)
-
+        
+        # set the start time
+        self.publisher_duration = publisher_duration
+        self.publisher_start_time = time.time()
+        
         self.i = 0
         if continuity_mode == 1:
             self.cur_priority = None
@@ -68,12 +74,21 @@ class MinimalPublisher(Node):
             if sampling_index != sampling_rate - 1:
                 time.sleep(1 / sampling_rate)
 
+            # check if the time has exceeded
+            self.checkIfTimeExceeded()
+            
     def publisMessage(self, msg):
         ## publisher method for any message
         self.publisher_.publish(msg)
         self.get_logger().info('Publishing: "%s"' % msg.data)
         self.i += 1
-
+    
+    def checkIfTimeExceeded(self):
+        passed_time = time.time() - self.publisher_start_time
+        if passed_time > self.publisher_duration:
+            self.get_logger().info('Time exceeded, exiting the publisher...')
+            exit()
+    
     def realistic_priority(self):
         if self.remaining_length == 0:
             self.remaining_length = random.randint(1, continuity_max_length)

@@ -8,41 +8,93 @@ import argparse
 from collections import defaultdict
 import json
 import os
+import numpy as np
+import yaml
+
+with open('/home/ros-scheduler/ros2_ws/config.yaml') as f:
+    d = yaml.safe_load(f)
+
+sampling_rate_mode = d['sampling_rate_mode']  # 0: constant, 1: poisson
+sampling_rate_expectation = d['sampling_rate_expectation']
+continuity_mode = d['continuity_mode']  # 0: i.i.d, 1: realistic
+continuity_max_length = d['continuity_max_length']
+
+topic_queue_size = int(d['topic_queue_size'])
+publisher_duration = int(d['publisher_duration'])
+
 class MinimalPublisher(Node):
 
     def __init__(self):
         super().__init__('minimal_publisher')
-        self.publisher_ = self.create_publisher(String, 'topic', 10)
-        timer_period = 0.5  # seconds
+        self.publisher_ = self.create_publisher(String, 'topic', topic_queue_size)
+        timer_period = 1.
         self.timer = self.create_timer(timer_period, self.timer_callback)
+        
+        # set the start time
+        self.publisher_duration = publisher_duration
+        self.publisher_start_time = time.time()
+        
         self.i = 0
+        if continuity_mode == 1:
+            self.cur_priority = None
+            self.remaining_length = 0
 
     def timer_callback(self):
-        msg = String()
-        timestamp = time.time()
-        message_data = self.i # sequence number for now
-        priority = self.random_priority()
 
-        # add data, time and i to the message
-        msg.data = '%d-%f-%s' % (message_data, timestamp, priority)
+        if sampling_rate_mode == 0:
+            sampling_rate = sampling_rate_expectation
+        elif sampling_rate_mode == 1:
+            sampling_rate = np.random.poisson(sampling_rate_expectation)
 
-        # log the messages and dictionary
-        current_message = defaultdict(dict)
-        current_message['priority'] = priority
-        current_message['timestamp_sender'] = timestamp
-        current_message['timestamp_receiver'] = time.time()
-        current_message['difference'] = time.time() - timestamp
-        current_message['sender_sequence'] = self.i
-        self.append_record(current_message)
+        for sampling_index in range(sampling_rate):
+            if continuity_mode == 0:
+                priority = self.random_priority()
+            elif continuity_mode == 1:
+                priority = self.realistic_priority()
 
-        # publish the message
-        self.publisMessage(msg)
+            msg = String()
+            timestamp = time.time()
+            message_data = self.i  # sequence number for now
 
-    def publisMessage(self,msg):
+            # add data, time and i to the message
+            msg.data = '%d-%f-%s' % (message_data, timestamp, priority)
+
+            # log the messages and dictionary
+            current_message = defaultdict(dict)
+            current_message['priority'] = priority
+            current_message['timestamp_sender'] = timestamp
+            current_message['timestamp_receiver'] = time.time()
+            current_message['difference'] = time.time() - timestamp
+            current_message['sender_sequence'] = self.i
+            self.append_record(current_message)
+
+            # publish the message
+            self.publisMessage(msg)
+
+            if sampling_index != sampling_rate - 1:
+                time.sleep(1 / sampling_rate)
+
+            # check if the time has exceeded
+            self.checkIfTimeExceeded()
+            
+    def publisMessage(self, msg):
         ## publisher method for any message
         self.publisher_.publish(msg)
         self.get_logger().info('Publishing: "%s"' % msg.data)
         self.i += 1
+    
+    def checkIfTimeExceeded(self):
+        passed_time = time.time() - self.publisher_start_time
+        if passed_time > self.publisher_duration:
+            self.get_logger().info('Time exceeded, exiting the publisher...')
+            exit()
+    
+    def realistic_priority(self):
+        if self.remaining_length == 0:
+            self.remaining_length = random.randint(1, continuity_max_length)
+            self.cur_priority = self.random_priority()
+        self.remaining_length -= 1
+        return self.cur_priority
 
     def random_priority(self):
         # generate a random number between 0 and 1
@@ -61,13 +113,15 @@ class MinimalPublisher(Node):
         # if the number is between 0.2 and 1, return L
         else:
             return 'L'
-    
-    def append_record(self,record):
+
+    def append_record(self, record):
         with open('publisher_records.json', 'a') as f:
             json.dump(record, f)
             f.write(os.linesep)
-    
+
+
 def main(args=None):
+
     rclpy.init(args=args)
 
     minimal_publisher = MinimalPublisher()

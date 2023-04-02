@@ -6,6 +6,19 @@ import time
 from collections import defaultdict
 import json
 import os
+import yaml
+
+with open('/home/ros-scheduler/ros2_ws/config.yaml') as f:
+    d = yaml.safe_load(f)
+
+sampling_rate_mode = d['sampling_rate_mode']  # 0: constant, 1: poisson
+sampling_rate_expectation = d['sampling_rate_expectation']
+continuity_mode = d['continuity_mode']  # 0: i.i.d, 1: realistic
+continuity_max_length = d['continuity_max_length']
+
+topic_queue_size = int(d['topic_queue_size'])
+subscriber_sample_rate = int(d['subscriber_sample_rate'])
+
 class MinimalSubscriber(Node):
 
     def __init__(self):
@@ -14,7 +27,7 @@ class MinimalSubscriber(Node):
             String,
             'topic',
             self.listener_callback,
-            10)
+            topic_queue_size)
         self.subscription  # prevent unused variable warning
         self.records = [] # defaultdict(dict)
         self.receiver_sequence = 0 # sequence number for receiver, total messages processed
@@ -58,7 +71,8 @@ class MinimalSubscriber(Node):
         self.append_record(current_message)
         
         # sleep for 1 second
-        time.sleep(1)
+        self.sample_period = 1/subscriber_sample_rate
+        time.sleep(self.sample_period)
     
     def append_record(self,record):
         with open('subscriber_records.json', 'a') as f:
