@@ -121,7 +121,7 @@ class MinimalPublisher(Node):
 
 
 def main(args=None):
-
+    
     rclpy.init(args=args)
 
     minimal_publisher = MinimalPublisher()

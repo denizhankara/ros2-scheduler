@@ -80,6 +80,12 @@ class MinimalSubscriber(Node):
             f.write(os.linesep)
         
 def main(args=None):
+    if os.path.exists('subscriber_records.json'):
+        os.remove('subscriber_records.json')
+
+    if os.path.exists('publisher_records.json'):
+        os.remove('publisher_records.json')
+
     rclpy.init(args=args)
 
     minimal_subscriber = MinimalSubscriber()

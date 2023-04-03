@@ -50,7 +50,7 @@ def calculate_drop_rate(sender_messages,receiver_messages):
         # calculate the drop rate
         drop_rate[priority] = 1 - (received_messages[priority] / sent_messages[priority])
         # print the drop rate
-        print("Drop rate for priority %s: %f" % (priority, drop_rate[priority]))
+        print(drop_rate[priority])
 
     return drop_rate
 
@@ -81,7 +81,7 @@ def calculate_average_delay(sender_messages,receiver_records):
         # calculate the average delay
         average_delay = total_delay[priority] / received_messages[priority]
         # print the average delay
-        print("Average delay for priority %s: %f" % (priority, average_delay))
+        print(average_delay)
 
     return total_delay, received_messages
 
