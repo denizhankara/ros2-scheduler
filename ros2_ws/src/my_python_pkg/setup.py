@@ -23,6 +23,8 @@ setup(
             'test = my_python_pkg.my_python_node:main',
             'publisher = my_python_pkg.publisher:main',
             'subscriber = my_python_pkg.subscriber:main',
+            'sub_sch = my_python_pkg.subscriber_scheduled:main',
+            'pub_sch = my_python_pkg.publisher_scheduled:main',
         ],
     },
 )
