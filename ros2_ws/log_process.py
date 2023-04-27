@@ -88,7 +88,7 @@ def calculate_average_delay(sender_messages,receiver_records):
     pass
 
 def main(args=None):
-    base_path = "/home/ros-scheduler/ros2_ws/"
+    base_path = "/root/ros2-scheduler/ros2_ws"
     subscriber_path = os.path.join(base_path, "subscriber_records.json")
     publisher_path = os.path.join(base_path, "publisher_records.json")
     # read the records of subscriber and publisher
