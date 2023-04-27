@@ -10,6 +10,7 @@ import yaml
 from rclpy.executors import *
 from rclpy.context import Context
 from rclpy.subscription import Subscription
+from collections import deque
 
 
 with open('/root/ros2-scheduler/ros2_ws/config.yaml') as f:
@@ -99,10 +100,10 @@ class MinimalSubscriber(Node):
 class MyExecutor(Executor):
     def __init__(self, *, context: Context = None) -> None:
         super().__init__(context=context)
-        self.queue_else = []
-        self.queue_H = []
-        self.queue_M = []
-        self.queue_L = []
+        self.queue_else = deque(maxlen=1000)
+        self.queue_H  = deque(maxlen=topic_queue_size)
+        self.queue_M  = deque(maxlen=topic_queue_size)
+        self.queue_L  = deque(maxlen=topic_queue_size)
         self.callback_empty = True
 
     def spin_once(self, timeout_sec: float = None) -> None:
@@ -127,20 +128,21 @@ class MyExecutor(Executor):
                     elif '_L' in topic_name:
                         self.queue_L.append(handler)
                     else:
+                        print('something appended to queue_else')
                         self.queue_else.append(handler)
                 else:
                     self.queue_else.append(handler)
         if len(self.queue_else) != 0:
-            handler = self.queue_else.pop(0)
+            handler = self.queue_else.popleft()
             self.callback_empty = False
         elif len(self.queue_H) != 0:
-            handler = self.queue_H.pop(0)
+            handler = self.queue_H.popleft()
             self.callback_empty = False
         elif len(self.queue_M) != 0:
-            handler = self.queue_M.pop(0)
+            handler = self.queue_M.popleft()
             self.callback_empty = False
         elif len(self.queue_L) != 0:
-            handler = self.queue_L.pop(0)
+            handler = self.queue_L.popleft()
             self.callback_empty = False
         else:
             # you should block next time
