@@ -131,16 +131,16 @@ class MyExecutor(Executor):
                 else:
                     self.queue_else.append(handler)
         if len(self.queue_else) != 0:
-            handler = self.queue_else[0]
+            handler = self.queue_else.pop(0)
             self.callback_empty = False
         elif len(self.queue_H) != 0:
-            handler = self.queue_H[0]
+            handler = self.queue_H.pop(0)
             self.callback_empty = False
         elif len(self.queue_M) != 0:
-            handler = self.queue_M[0]
+            handler = self.queue_M.pop(0)
             self.callback_empty = False
         elif len(self.queue_L) != 0:
-            handler = self.queue_L[0]
+            handler = self.queue_L.pop(0)
             self.callback_empty = False
         else:
             # you should block next time

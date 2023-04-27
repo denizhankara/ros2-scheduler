@@ -1,0 +1,3 @@
+{"receiver_sequence": 0, "priority": "L", "timestamp_sender": 1682622639.411683, "timestamp_receiver": 1682622639.434023, "difference": 0.022340774536132812, "sender_sequence": 143}
+{"receiver_sequence": 1, "priority": "M", "timestamp_sender": 1682622641.625702, "timestamp_receiver": 1682622641.626931, "difference": 0.0012297630310058594, "sender_sequence": 161}
+{"receiver_sequence": 2, "priority": "H", "timestamp_sender": 1682622647.077277, "timestamp_receiver": 1682622647.0785832, "difference": 0.0013079643249511719, "sender_sequence": 187}
