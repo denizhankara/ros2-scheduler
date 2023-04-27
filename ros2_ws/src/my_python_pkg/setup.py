@@ -1,6 +1,6 @@
 from setuptools import setup
 import os
-import glob
+from glob import glob
 
 package_name = 'my_python_pkg'
 

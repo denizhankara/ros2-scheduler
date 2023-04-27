@@ -8,6 +8,7 @@ setup.py
 ../../../build/my_python_pkg/my_python_pkg.egg-info/requires.txt
 ../../../build/my_python_pkg/my_python_pkg.egg-info/top_level.txt
 ../../../build/my_python_pkg/my_python_pkg.egg-info/zip-safe
+launch/my_scripts_launch.py
 my_python_pkg/__init__.py
 my_python_pkg/my_executor.py
 my_python_pkg/my_python_node.py
