@@ -1,7 +1,7 @@
 sampling_rate_mode : 1  # 0: constant, 1: poisson
-sampling_rate_expectation : 5
+sampling_rate_expectation : 10
 continuity_mode : 0  # 0: i.i.d, 1: realistic
 continuity_max_length : 20
-topic_queue_size: 5
-subscriber_sample_rate: 10
+topic_queue_size: 2
+subscriber_sample_rate: 20
 publisher_duration: 100

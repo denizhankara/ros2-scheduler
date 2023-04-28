@@ -11,7 +11,7 @@ import os
 import numpy as np
 import yaml
 
-with open('/home/ros-scheduler/ros2_ws/config.yaml') as f:
+with open('/root/ros2-scheduler/ros2_ws/config.yaml') as f:
     d = yaml.safe_load(f)
 
 sampling_rate_mode = d['sampling_rate_mode']  # 0: constant, 1: poisson
