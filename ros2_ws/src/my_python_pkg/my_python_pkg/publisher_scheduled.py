@@ -10,7 +10,7 @@ import json
 import os
 import numpy as np
 import yaml
-from priority_node import PriorityNode
+import priority_node
 
 
 with open('/root/ros2-scheduler/ros2_ws/config.yaml') as f:
@@ -25,8 +25,7 @@ topic_queue_size = int(d['topic_queue_size'])
 publisher_duration = int(d['publisher_duration'])
 
 
-
-class MinimalPublisher(PriorityNode):
+class MinimalPublisher(priority_node.PriorityNode):
 
     def __init__(self):
         super().__init__('minimal_publisher')
