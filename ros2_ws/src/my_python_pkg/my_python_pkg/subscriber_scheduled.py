@@ -11,6 +11,7 @@ from rclpy.executors import *
 from rclpy.context import Context
 from rclpy.subscription import Subscription
 from collections import deque
+from rclpy.callback_groups import ReentrantCallbackGroup
 
 
 with open('/root/ros2-scheduler/ros2_ws/config.yaml') as f:
@@ -25,26 +26,30 @@ topic_queue_size = int(d['topic_queue_size'])
 subscriber_sample_rate = int(d['subscriber_sample_rate'])
 
 
-
 class MinimalSubscriber(Node):
 
     def __init__(self):
         super().__init__('minimal_subscriber')
+        my_callback_group = ReentrantCallbackGroup()
+
         self.subscription_H = self.create_subscription(
             String,
             'topic_H',
             self.listener_callback,
-            topic_queue_size)
+            topic_queue_size,
+            callback_group=my_callback_group)
         self.subscription_M = self.create_subscription(
             String,
             'topic_M',
             self.listener_callback,
-            topic_queue_size)
+            topic_queue_size,
+            callback_group=my_callback_group)
         self.subscription_L = self.create_subscription(
             String,
             'topic_L',
             self.listener_callback,
-            topic_queue_size)
+            topic_queue_size,
+            callback_group=my_callback_group)
         # self.subscription  # prevent unused variable warning
         self.records = []  # defaultdict(dict)
         self.receiver_sequence = 0  # sequence number for receiver, total messages processed
@@ -101,9 +106,9 @@ class MyExecutor(Executor):
     def __init__(self, *, context: Context = None) -> None:
         super().__init__(context=context)
         self.queue_else = deque(maxlen=1000)
-        self.queue_H  = deque(maxlen=topic_queue_size)
-        self.queue_M  = deque(maxlen=topic_queue_size)
-        self.queue_L  = deque(maxlen=topic_queue_size)
+        self.queue_H = deque(maxlen=topic_queue_size)
+        self.queue_M = deque(maxlen=topic_queue_size)
+        self.queue_L = deque(maxlen=topic_queue_size)
         self.callback_empty = True
 
     def spin_once(self, timeout_sec: float = None) -> None:
