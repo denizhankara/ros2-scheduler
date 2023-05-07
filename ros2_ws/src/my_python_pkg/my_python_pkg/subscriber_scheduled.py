@@ -31,7 +31,7 @@ class MinimalSubscriber(PriorityNode):
 
     def __init__(self):
         super().__init__('minimal_subscriber')
-        my_callback_group = ReentrantCallbackGroup()
+        # my_callback_group = ReentrantCallbackGroup()
 
         # self.subscription_H = self.create_subscription(
         #     String,
@@ -54,8 +54,8 @@ class MinimalSubscriber(PriorityNode):
         self.create_subscription_priority(3, String,
                                           'topic',
                                           self.listener_callback,
-                                          topic_queue_size,
-                                          callback_group=my_callback_group)
+                                          topic_queue_size,)
+                                        #   callback_group=my_callback_group)
         # self.subscription  # prevent unused variable warning
         self.records = []  # defaultdict(dict)
         self.receiver_sequence = 0  # sequence number for receiver, total messages processed
