@@ -11,7 +11,7 @@ from rclpy.executors import *
 from rclpy.context import Context
 from rclpy.subscription import Subscription
 from collections import deque
-from rclpy.callback_groups import ReentrantCallbackGroup
+from rclpy.callback_groups import ReentrantCallbackGroup, MutuallyExclusiveCallbackGroup
 from .priority_node import PriorityNode
 
 
@@ -155,6 +155,7 @@ class MyExecutor(Executor):
                 if len(queue) != 0:
                     handler = queue.popleft()
                     self.callback_empty = False
+                    break
 
         if self.callback_empty is False:
             handler()
