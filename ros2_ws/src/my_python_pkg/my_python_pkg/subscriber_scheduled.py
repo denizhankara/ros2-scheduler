@@ -12,7 +12,7 @@ from rclpy.context import Context
 from rclpy.subscription import Subscription
 from collections import deque
 from rclpy.callback_groups import ReentrantCallbackGroup
-import priority_node
+from .priority_node import PriorityNode
 
 
 with open('/root/ros2-scheduler/ros2_ws/config.yaml') as f:
@@ -27,7 +27,7 @@ topic_queue_size = int(d['topic_queue_size'])
 subscriber_sample_rate = int(d['subscriber_sample_rate'])
 
 
-class MinimalSubscriber(priority_node.PriorityNode):
+class MinimalSubscriber(PriorityNode):
 
     def __init__(self):
         super().__init__('minimal_subscriber')
