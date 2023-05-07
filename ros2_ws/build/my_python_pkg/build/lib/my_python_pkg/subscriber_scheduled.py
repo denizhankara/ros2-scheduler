@@ -11,6 +11,7 @@ from rclpy.executors import *
 from rclpy.context import Context
 from rclpy.subscription import Subscription
 from collections import deque
+from rclpy.callback_groups import MutuallyExclusiveCallbackGroup, ReentrantCallbackGroup
 
 
 with open('/root/ros2-scheduler/ros2_ws/config.yaml') as f:
@@ -30,21 +31,25 @@ class MinimalSubscriber(Node):
 
     def __init__(self):
         super().__init__('minimal_subscriber')
+        my_callback_group = ReentrantCallbackGroup()
         self.subscription_H = self.create_subscription(
             String,
             'topic_H',
             self.listener_callback,
-            topic_queue_size)
+            topic_queue_size,
+            callback_group=my_callback_group)
         self.subscription_M = self.create_subscription(
             String,
             'topic_M',
             self.listener_callback,
-            topic_queue_size)
+            topic_queue_size,
+            callback_group=my_callback_group)
         self.subscription_L = self.create_subscription(
             String,
             'topic_L',
             self.listener_callback,
-            topic_queue_size)
+            topic_queue_size,
+            callback_group=my_callback_group)
         # self.subscription  # prevent unused variable warning
         self.records = []  # defaultdict(dict)
         self.receiver_sequence = 0  # sequence number for receiver, total messages processed

@@ -7,21 +7,21 @@ def generate_launch_description():
     publisher_node1 = Node(
         package='my_python_pkg',
         namespace='my_namespace',
-        executable='pub_sch',
+        executable='publisher',
         name='my_publisher_node1'
     )
 
     publisher_node2 = Node(
         package='my_python_pkg',
         namespace='my_namespace',
-        executable='pub_sch',
+        executable='publisher',
         name='my_publisher_node2'
     )
 
     subscriber_node = Node(
         package='my_python_pkg',
         namespace='my_namespace',
-        executable='sub_sch',
+        executable='subscriber',
         name='my_subscriber_node'
     )
     

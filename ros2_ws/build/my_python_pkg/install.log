@@ -15,6 +15,7 @@
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/share/ament_index/resource_index/packages/my_python_pkg
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/share/my_python_pkg/package.xml
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/share/my_python_pkg/my_scripts_launch.py
+/root/ros2-scheduler/ros2_ws/install/my_python_pkg/share/my_python_pkg/legacy_my_scripts_launch.py
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg-0.0.0-py3.10.egg-info/top_level.txt
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg-0.0.0-py3.10.egg-info/SOURCES.txt
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg-0.0.0-py3.10.egg-info/entry_points.txt
