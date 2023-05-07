@@ -10,6 +10,8 @@ import json
 import os
 import numpy as np
 import yaml
+from .priority_node import PriorityNode
+
 
 with open('/root/ros2-scheduler/ros2_ws/config.yaml') as f:
     d = yaml.safe_load(f)
@@ -23,16 +25,18 @@ topic_queue_size = int(d['topic_queue_size'])
 publisher_duration = int(d['publisher_duration'])
 
 
-class MinimalPublisher(Node):
+
+class MinimalPublisher(PriorityNode):
 
     def __init__(self):
         super().__init__('minimal_publisher')
-        self.publisher_H = self.create_publisher(
-            String, 'topic_H', topic_queue_size)
-        self.publisher_M = self.create_publisher(
-            String, 'topic_M', topic_queue_size)
-        self.publisher_L = self.create_publisher(
-            String, 'topic_L', topic_queue_size)
+        # self.publisher_H = self.create_publisher(
+        #     String, 'topic_H', topic_queue_size)
+        # self.publisher_M = self.create_publisher(
+        #     String, 'topic_M', topic_queue_size)
+        # self.publisher_L = self.create_publisher(
+        #     String, 'topic_L', topic_queue_size)
+        self.create_publisher_priority(3, String, 'topic', topic_queue_size)
         timer_period = 1.
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
@@ -86,11 +90,11 @@ class MinimalPublisher(Node):
     def publisMessage(self, msg, priority):
         # publisher method for any message
         if priority == 'H':
-            self.publisher_H.publish(msg)
+            self.publish_priority(0, 'topic', msg)
         elif priority == 'M':
-            self.publisher_M.publish(msg)
+            self.publish_priority(1,'topic', msg)
         elif priority == 'L':
-            self.publisher_L.publish(msg)
+            self.publish_priority(2, 'topic',msg)
 
         self.get_logger().info('Publishing: "%s"' % msg.data)
         self.i += 1

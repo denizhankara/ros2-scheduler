@@ -5,6 +5,7 @@
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/subscriber_scheduled.py
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/my_executor.py
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/publisher.py
+/root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/priority_node.py
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/__pycache__/my_python_node.cpython-310.pyc
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/__pycache__/subscriber.cpython-310.pyc
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/__pycache__/__init__.cpython-310.pyc
@@ -12,6 +13,7 @@
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/__pycache__/subscriber_scheduled.cpython-310.pyc
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/__pycache__/my_executor.cpython-310.pyc
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/__pycache__/publisher.cpython-310.pyc
+/root/ros2-scheduler/ros2_ws/install/my_python_pkg/lib/python3.10/site-packages/my_python_pkg/__pycache__/priority_node.cpython-310.pyc
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/share/ament_index/resource_index/packages/my_python_pkg
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/share/my_python_pkg/package.xml
 /root/ros2-scheduler/ros2_ws/install/my_python_pkg/share/my_python_pkg/my_scripts_launch.py

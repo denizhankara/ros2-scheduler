@@ -12,6 +12,7 @@ launch/my_scripts_launch.py
 my_python_pkg/__init__.py
 my_python_pkg/my_executor.py
 my_python_pkg/my_python_node.py
+my_python_pkg/priority_node.py
 my_python_pkg/publisher.py
 my_python_pkg/publisher_scheduled.py
 my_python_pkg/subscriber.py

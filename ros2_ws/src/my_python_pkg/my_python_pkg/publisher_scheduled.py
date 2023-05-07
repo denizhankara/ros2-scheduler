@@ -90,11 +90,11 @@ class MinimalPublisher(PriorityNode):
     def publisMessage(self, msg, priority):
         # publisher method for any message
         if priority == 'H':
-            self.publish_priority(0, msg)
+            self.publish_priority(0, 'topic', msg)
         elif priority == 'M':
-            self.publish_priority(1, msg)
+            self.publish_priority(1,'topic', msg)
         elif priority == 'L':
-            self.publish_priority(2, msg)
+            self.publish_priority(2, 'topic',msg)
 
         self.get_logger().info('Publishing: "%s"' % msg.data)
         self.i += 1

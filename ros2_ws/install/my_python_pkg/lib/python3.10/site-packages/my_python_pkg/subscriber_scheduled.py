@@ -12,6 +12,7 @@ from rclpy.context import Context
 from rclpy.subscription import Subscription
 from collections import deque
 from rclpy.callback_groups import ReentrantCallbackGroup
+from .priority_node import PriorityNode
 
 
 with open('/root/ros2-scheduler/ros2_ws/config.yaml') as f:
@@ -26,30 +27,35 @@ topic_queue_size = int(d['topic_queue_size'])
 subscriber_sample_rate = int(d['subscriber_sample_rate'])
 
 
-class MinimalSubscriber(Node):
+class MinimalSubscriber(PriorityNode):
 
     def __init__(self):
         super().__init__('minimal_subscriber')
         my_callback_group = ReentrantCallbackGroup()
 
-        self.subscription_H = self.create_subscription(
-            String,
-            'topic_H',
-            self.listener_callback,
-            topic_queue_size,
-            callback_group=my_callback_group)
-        self.subscription_M = self.create_subscription(
-            String,
-            'topic_M',
-            self.listener_callback,
-            topic_queue_size,
-            callback_group=my_callback_group)
-        self.subscription_L = self.create_subscription(
-            String,
-            'topic_L',
-            self.listener_callback,
-            topic_queue_size,
-            callback_group=my_callback_group)
+        # self.subscription_H = self.create_subscription(
+        #     String,
+        #     'topic_H',
+        #     self.listener_callback,
+        #     topic_queue_size,
+        #     callback_group=my_callback_group)
+        # self.subscription_M = self.create_subscription(
+        #     String,
+        #     'topic_M',
+        #     self.listener_callback,
+        #     topic_queue_size,
+        #     callback_group=my_callback_group)
+        # self.subscription_L = self.create_subscription(
+        #     String,
+        #     'topic_L',
+        #     self.listener_callback,
+        #     topic_queue_size,
+        #     callback_group=my_callback_group)
+        self.create_subscription_priority(3, String,
+                                          'topic',
+                                          self.listener_callback,
+                                          topic_queue_size,
+                                          callback_group=my_callback_group)
         # self.subscription  # prevent unused variable warning
         self.records = []  # defaultdict(dict)
         self.receiver_sequence = 0  # sequence number for receiver, total messages processed
@@ -103,12 +109,13 @@ class MinimalSubscriber(Node):
 
 
 class MyExecutor(Executor):
-    def __init__(self, *, context: Context = None) -> None:
+    def __init__(self, priority_topic_names, *, context: Context = None) -> None:
         super().__init__(context=context)
+        self.priority_topic_names = priority_topic_names
         self.queue_else = deque(maxlen=1000)
-        self.queue_H = deque(maxlen=topic_queue_size)
-        self.queue_M = deque(maxlen=topic_queue_size)
-        self.queue_L = deque(maxlen=topic_queue_size)
+        for name in priority_topic_names:
+            setattr(self, 'queue_'+name, deque(maxlen=topic_queue_size))
+
         self.callback_empty = True
 
     def spin_once(self, timeout_sec: float = None) -> None:
@@ -126,37 +133,28 @@ class MyExecutor(Executor):
                 self.callback_empty = False
                 if isinstance(entity, Subscription):
                     topic_name = entity.topic_name
-                    if '_H' in topic_name:
-                        self.queue_H.append(handler)
-                    elif '_M' in topic_name:
-                        self.queue_M.append(handler)
-                    elif '_L' in topic_name:
-                        self.queue_L.append(handler)
+                    if topic_name in self.priority_topic_names:
+                        getattr(self, 'queue_'+topic_name).append(handler)
                     else:
                         print('something appended to queue_else')
                         self.queue_else.append(handler)
                 else:
                     self.queue_else.append(handler)
-        
-        print(len(self.queue_else),len(self.queue_H),len(self.queue_M),len(self.queue_L))
-        
+
+        # print(len(self.queue_else),len(self.queue_H),len(self.queue_M),len(self.queue_L))
+
         if len(self.queue_else) != 0:
             handler = self.queue_else.popleft()
             self.callback_empty = False
-        elif len(self.queue_H) != 0:
-            handler = self.queue_H.popleft()
-            self.callback_empty = False
-        elif len(self.queue_M) != 0:
-            handler = self.queue_M.popleft()
-            self.callback_empty = False
-        elif len(self.queue_L) != 0:
-            handler = self.queue_L.popleft()
-            self.callback_empty = False
+
         else:
             # you should block next time
             self.callback_empty = True
-
-        
+            for name in self.priority_topic_names:
+                queue = getattr(self, 'queue_'+name)
+                if len(queue) != 0:
+                    handler = queue.popleft()
+                    self.callback_empty = False
 
         if self.callback_empty is False:
             handler()
@@ -172,10 +170,9 @@ def main(args=None):
         os.remove('publisher_records.json')
 
     rclpy.init(args=args)
-
-    my_executor = MyExecutor()
-
     minimal_subscriber = MinimalSubscriber()
+
+    my_executor = MyExecutor(minimal_subscriber.priority_topic_names)
 
     rclpy.spin(minimal_subscriber, my_executor)
 

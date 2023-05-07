@@ -26,7 +26,7 @@ class MyExecutor(Executor):
             else:
                 self.callback_empty = False
                 if isinstance(entity, Subscription):
-                    topic_name = entity.topic_name
+                    topic_name = entity.topic_name()
                     if '_H' in topic_name:
                         self.queue_H.append(handler)
                     elif '_M' in topic_name:
