@@ -137,6 +137,9 @@ class MyExecutor(Executor):
                         self.queue_else.append(handler)
                 else:
                     self.queue_else.append(handler)
+        
+        # print(len(self.queue_else),len(self.queue_H),len(self.queue_M),len(self.queue_L))
+
         if len(self.queue_else) != 0:
             handler = self.queue_else.popleft()
             self.callback_empty = False
@@ -152,6 +155,8 @@ class MyExecutor(Executor):
         else:
             # you should block next time
             self.callback_empty = True
+
+        
 
         if self.callback_empty is False:
             handler()
