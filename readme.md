@@ -31,9 +31,3 @@ git clone https://github.com/denizhankara/schedulesprint.git
 colcon build --symlink-install
 source install/setup.bash
 ```
-
-
-3. Launch the ScheduleSprint system:
-```bash
-ros2 launch schedulesprint schedulesprint.launch.py
-```
